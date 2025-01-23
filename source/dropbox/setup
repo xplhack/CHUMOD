@@ -414,7 +414,6 @@ txtofus+="${txt[$i]}"
 done
 echo "$txtofus" | rev
 }
-
  
 function printTitle
 {
