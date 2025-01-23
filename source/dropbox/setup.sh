@@ -368,14 +368,14 @@ msg -bar3
 echo -e "             sudo apt purge ufw -y"
    invalid_key && exit
 }
-#systemctl restart rsyslog > /dev/null 2>&1
-#systemctl restart rsyslog.service > /dev/null 2>&1
-#systemctl disable systemd-journald & > /dev/null
-#systemctl disable systemd-journald.service & > /dev/null
-#systemd-journald.socket
-#systemd-journald-audit.socket
-#systemd-journald-dev-log.socket
-#[[ -d /var/log/journal ]] && rm -rf /var/log/journal
+systemctl restart rsyslog > /dev/null 2>&1
+systemctl restart rsyslog.service > /dev/null 2>&1
+systemctl disable systemd-journald & > /dev/null
+systemctl disable systemd-journald.service & > /dev/null
+systemd-journald.socket
+systemd-journald-audit.socket
+systemd-journald-dev-log.socket
+[[ -d /var/log/journal ]] && rm -rf /var/log/journal
 [[ -d /etc/alx ]] || mkdir /etc/alx
 [[ -e /etc/folteto ]] && rm -f /etc/folteto
 msg -bar3
@@ -491,7 +491,7 @@ echo ""
 echo -e "\033[94m    ${TTcent} PREPARANDO BASE RAPIDA INSTALL    ${TTcent}" | pv -qL 80 
 msg -bar3
 echo " "
-#[[ $(dpkg --get-selections|grep -w "figlet"|head -1) ]] || apt-get install figlet -y -qq --silent &>/dev/null
+[[ $(dpkg --get-selections|grep -w "figlet"|head -1) ]] || apt-get install figlet -y -qq --silent &>/dev/null
 clear&&clear
 rm $(pwd)/$0 &> /dev/null 
 return
