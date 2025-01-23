@@ -31,7 +31,7 @@ os_system(){
  }
 
 rutaSCRIPT () {
-rm -f setup.sh*
+rm -f setup
 act_ufw() {
 [[ -f "/usr/sbin/ufw" ]] && ufw allow 81/tcp ; ufw allow 8888/tcp
 }
@@ -521,6 +521,6 @@ done
 [[ -e "$(which cgh)" ]] && $(which cgh) || echo -e " INSTALACION NO COMPLETADA CON EXITO !"
 } || {
 echo -e " NO SE RECIVIO PARAMETROS "
-rm -f setup.sh*
+rm -f setup
 rm -f /etc/folteto
 }
