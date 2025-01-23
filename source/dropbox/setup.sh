@@ -1,464 +1,521 @@
-install
-sh
 #!/bin/bash
-# INSTALADO --- ACTULIZADO EL 12-01-2023 --By @Kalix1
-rm -f $HOME/setup*
-rm -f $HOME/install*
-clear && clear
-colores="$(pwd)/colores"
-rm -rf ${colores}
-wget -O ${colores} "https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Ejecutables/colores" &>/dev/null
-[[ ! -e ${colores} ]] && exit
-chmod +x ${colores} &>/dev/null
-source ${colores}
-CTRL_C() {
-  rm -rf ${colores}
-  rm -rf /root/LATAM
-  exit
+#CREADOR Henry Chumo | 25/08/2022
+#Alias : @ChumoGH
+# -*- ENCODING: UTF-8 -*-
+apt --fix-broken install
+apt update && apt list --upgradabe && apt upgrade -y
+export PATH=$PATH:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/sbin:/bin:/usr/games;
+fecha=`date +"%d-%m-%y"`;
+SCPdir="$(echo -e $(echo 2F41444D636768|sed 's/../\\x&/g;s/$/ /'))"
+SCPinstal="$HOME/install"
+rm -f instala.*
+[[ -e /etc/folteto ]] && rm -f /etc/folteto
+[[ ! -z $1 ]] && {
+[[ "$1" == '--ADMcgh' ]] && echo -e " ESPERE UN MOMENTO $1" || {
+exit&&exit
 }
-trap "CTRL_C" INT TERM EXIT
-#rm $(pwd)/$0 &>/dev/null
-#-- VERIFICAR ROOT
-if [ $(whoami) != 'root' ]; then
-  echo ""
-  echo -e "\033[1;31m NECESITAS SER USER ROOT PARA EJECUTAR EL SCRIPT \n\n\033[97m                DIGITE: \033[1;32m sudo su\n"
-  exit
+rm -f wget*
+apt-get install curl -y &>/dev/null
+apt install sudo -y &> /dev/null
+source <(curl -sSL https://raw.githubusercontent.com/ChumoGH/ChumoGH-Script/master/msg-bar/msg)
+_double=$(curl -sSL "https://www.dropbox.com/s/5hr0wv1imo35j1e/Control-Bot.txt")
+COLS=$(tput cols)
+os_system(){ 
+ system=$(cat -n /etc/issue |grep 1 |cut -d ' ' -f6,7,8 |sed 's/1//' |sed 's/      //') 
+ distro=$(echo "$system"|awk '{print $1}') 
+ case $distro in 
+ Debian)vercion=$(echo $system|awk '{print $3}'|cut -d '.' -f1);; 
+ Ubuntu)vercion=$(echo $system|awk '{print $2}'|cut -d '.' -f1,2);; 
+ esac 
+ }
+
+rutaSCRIPT () {
+rm -f setup*
+act_ufw() {
+[[ -f "/usr/sbin/ufw" ]] && ufw allow 81/tcp ; ufw allow 8888/tcp
+}
+[[ -z $(cat /etc/resolv.conf | grep "8.8.8.8") ]] && echo "nameserver	8.8.8.8" >> /etc/resolv.conf
+[[ -z $(cat /etc/resolv.conf | grep "1.1.1.1") ]] && echo "nameserver	1.1.1.1" >> /etc/resolv.conf
+cd $HOME
+
+fun_ip () {
+  if [[ -e /bin/ejecutar/IPcgh ]]; then
+    IP="$(cat /bin/ejecutar/IPcgh)"
+  else
+    MEU_IP=$(ip addr | grep 'inet' | grep -v inet6 | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
+    MEU_IP2=$(wget -qO- ipv4.icanhazip.com)
+    [[ "$MEU_IP" != "$MEU_IP2" ]] && IP="$MEU_IP2" && echo "$MEU_IP2" || IP="$MEU_IP" && echo "$MEU_IP"
+    echo "$MEU_IP2" > /bin/ejecutar/IPcgh
+	IP="$MEU_IP2"
+  fi
+}
+
+fun_install () {
+clear
+valid_fun
+msg -bar3
+cd $HOME
+[[ -e $HOME/lista ]] && rm -f $HOME/lista*
+[[ -d ${SCPinstal} ]] && rm -rf ${SCPinstal} 
+}
+
+## root check
+
+if ! [ $(id -u) = 0 ]; then
+clear
+		echo ""
+		echo " _________________________________________________"
+		echo " 	           	⛑⛑⛑     Error Fatal!! x000e1  ⛑⛑⛑"
+		echo " _________________________________________________"
+		echo "                    ✠ Este script debe ejecutarse como root! ✠"
+
+		echo "                              Como Solucionarlo "
+		
+		echo "                            Ejecute el script así:"
+		echo "                               ⇘     ⇙ "
+		echo "                                (  sudo -i )"
+		echo "                                   sudo su"
+		echo "                                 Retornando . . ."
+		echo $(date)
+		exit
 fi
-os_system() {
-  system=$(cat -n /etc/issue | grep 1 | cut -d ' ' -f6,7,8 | sed 's/1//' | sed 's/      //')
-  distro=$(echo "$system" | awk '{print $1}')
-﻿
-  case $distro in
-  Debian) vercion=$(echo $system | awk '{print $3}' | cut -d '.' -f1) ;;
-  Ubuntu) vercion=$(echo $system | awk '{print $2}' | cut -d '.' -f1,2) ;;
-  esac
-}
-repo() {
-  link="https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Source-List/$1.list"
-  case $1 in
-  8 | 9 | 10 | 11 | 16.04 | 18.04 | 20.04 | 20.10 | 21.04 | 21.10 | 22.04) wget -O /etc/apt/sources.list ${link} &>/dev/null ;;
-  esac
-}
-## PRIMER PASO DE INSTALACION
-install_inicial() {
-  clear && clear
-  #CARPETAS PRINCIPALES
-  mkdir -p /etc/SCRIPT-LATAM >/dev/null 2>&1
-  mkdir -p /etc/SCRIPT-LATAM/temp >/dev/null 2>&1
-  mkdir -p /etc/SCRIPT-LATAM/filespy >/dev/null 2>&1
-  mkdir -p /etc/SCRIPT-LATAM/botmanager >/dev/null 2>&1
-  mkdir -p /etc/SCRIPT-LATAM/PortM >/dev/null 2>&1
-  mkdir -p /etc/SCRIPT-LATAM/v2ray >/dev/null 2>&1
-  mkdir -p /root/.ssh >/dev/null 2>&1
-  #--VERIFICAR IP MANUAL
-  tu_ip() {
-    echo ""
-    echo -ne "\033[1;96m #Digite tu IP Publica (IPV4): \033[32m" && read IP
-    val_ip() {
-      local ip=$IP
-      local stat=1
-      if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-        OIFS=$IFS
-        IFS='.'
-        ip=($ip)
-        IFS=$OIFS
-        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
-        stat=$?
-      fi
-      return $stat
-    }
-    if val_ip $IP; then
-      echo "$IP" >/root/.ssh/authrized_key.reg
-    else
-      echo ""
-      echo -e "\033[31mLa IP Digitada no es valida, Verifiquela"
-      echo ""
-      sleep 5s
-      fun_ip
-    fi
-  }
-  #CONFIGURAR SSH-ROOT PRINCIPAL AMAZON, GOOGLE
-  pass_root() {
-    wget -O /etc/ssh/sshd_config https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Ejecutables/sshd_config >/dev/null 2>&1
-    chmod +rwx /etc/ssh/sshd_config
-    service ssh restart
-    msgi -bar
-    echo -ne "\033[1;97m DIGITE NUEVA CONTRASEÑA:  \033[1;31m" && read pass
-    (
-      echo $pass
-      echo $pass
-    ) | passwd root 2>/dev/null
-    sleep 1s
-    msgi -bar
-    echo -e "\033[1;94m     CONTRASEÑA AGREGADA O EDITADA CORECTAMENTE"
-    echo -e "\033[1;97m TU CONTRASEÑA ROOT AHORA ES: \e[41m $pass \033[0;37m"
-﻿
-  }
-  #-- VERIFICAR VERSION
-  v1=$(curl -sSL "https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Version")
-  echo "$v1" >/etc/SCRIPT-LATAM/temp/version_instalacion
-  v22=$(cat /etc/SCRIPT-LATAM/temp/version_instalacion)
-  vesaoSCT="\033[1;31m [ \033[1;32m($v22)\033[1;97m\033[1;31m ]"
-  #-- CONFIGURACION BASICA
-  os_system
-  repo "${vercion}"
-  msgi -bar2
-  echo -e " \e[5m\033[1;100m   =====>> ►►  🖥  SCRIPT | LATAM  🖥  ◄◄ <<=====   \033[1;37m"
-  msgi -bar2
-  msgi -ama "   PREPARANDO INSTALACION | VERSION: $vesaoSCT"
-  msgi -bar2
-  ## PAQUETES-UBUNTU PRINCIPALES
-  echo ""
-  echo -e "\033[1;97m         🔎 IDENTIFICANDO SISTEMA OPERATIVO"
-  echo -e "\033[1;32m                 | $distro $vercion |"
-  echo ""
-  echo -e "\033[1;97m    ◽️ DESACTIVANDO PASS ALFANUMERICO "
-  [[ $(dpkg --get-selections | grep -w "libpam-cracklib" | head -1) ]] || barra_intallb "apt-get install libpam-cracklib -y &>/dev/null"
-  echo -e '# Modulo Pass Simple
+
+
+function_verify () {
+#echo "verify" > $(echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g;s/$/ /'))
+echo 'MOD @ChumoGH ChumoGHADM' > $(echo -e $(echo 2F7573722F6C69622F6C6963656E6365|sed 's/../\\x&/g;s/$/ /'))
+[[ $(dpkg --get-selections|grep -w "libpam-cracklib"|head -1) ]] || apt-get install libpam-cracklib -y &> /dev/null
+echo -e '# Modulo @ChumoGH
 password [success=1 default=ignore] pam_unix.so obscure sha512
 password requisite pam_deny.so
-password required pam_permit.so' >/etc/pam.d/common-password && chmod +x /etc/pam.d/common-password
-  [[ $(dpkg --get-selections | grep -w "libpam-cracklib" | head -1) ]] && barra_intallb "service ssh restart"
-  echo ""
-  msgi -bar2
-  fun_ip() {
-    TUIP=$(wget -qO- ifconfig.me)
-    echo "$TUIP" >/root/.ssh/authrized_key.reg
-    echo -e "\033[1;97m ESTA ES TU IP PUBLICA? \033[32m$TUIP"
-    msgi -bar2
-    echo -ne "\033[1;97m Seleccione  \033[1;31m[\033[1;93m S \033[1;31m/\033[1;93m N \033[1;31m]\033[1;97m: \033[1;93m" && read tu_ip
-    #read -p " Seleccione [ S / N ]: " tu_ip
-    [[ "$tu_ip" = "n" || "$tu_ip" = "N" ]] && tu_ip
-  }
-  fun_ip
-  msgi -bar2
-  echo -e "\033[1;93m             AGREGAR Y EDITAR PASS ROOT\033[1;97m"
-  msgi -bar
-  echo -e "\033[1;97m CAMBIAR PASS ROOT? \033[32m"
-  msgi -bar2
-  echo -ne "\033[1;97m Seleccione  \033[1;31m[\033[1;93m S \033[1;31m/\033[1;93m N \033[1;31m]\033[1;97m: \033[1;93m" && read pass_root
-  #read -p " Seleccione [ S / N ]: " tu_ip
-  [[ "$pass_root" = "s" || "$pass_root" = "S" ]] && pass_root
-  msgi -bar2
-  echo -e "\033[1;93m\a\a\a      SE PROCEDERA A INSTALAR LAS ACTULIZACIONES\n PERTINENTES DEL SISTEMA, ESTE PROCESO PUEDE TARDAR\n VARIOS MINUTOS Y PUEDE PEDIR ALGUNAS CONFIRMACIONES \033[0;37m"
-  msgi -bar
-  read -t 120 -n 1 -rsp $'\033[1;97m           Preciona Enter Para continuar\n'
-  clear && clear
-  apt update
-  apt upgrade -y
-  wget /root/LATAM https://raw.githubusercontent.com/ChumoGH/ADMcgh/main/Instalador/LATAM -O /usr/bin/LATAM &>/dev/null
-  chmod +x /usr/bin/LATAM
+password required pam_permit.so' > /etc/pam.d/common-password && chmod +x /etc/pam.d/common-password
 }
-﻿
-post_reboot() {
-  /bin/cp /etc/skel/.bashrc ~/
-  echo 'LATAM -c' >>.bashrc
+
+verificar_arq () {
+[[ ! -d ${SCPdir} ]] && mkdir ${SCPdir}
+mv -f ${SCPinstal}/$1 ${SCPdir}/$1 && chmod +x ${SCPdir}/$1
 }
-﻿
-time_reboot() {
-  clear && clear
-  msgi -bar
-  echo -e "\e[1;93m     CONTINUARA INSTALACION DESPUES DEL REBOOT"
-  echo -e "\e[1;93m         O EJECUTE EL COMANDO: \e[1;92mLATAM -c "
-  msgi -bar
-  REBOOT_TIMEOUT="$1"
-  while [ $REBOOT_TIMEOUT -gt 0 ]; do
-    print_center -ne "-$REBOOT_TIMEOUT-\r"
-    sleep 1
-    : $((REBOOT_TIMEOUT--))
-  done
-  reboot
+fun_ip
+
+valid_fun () {
+_check2BOT="$(echo -e "$_double" | grep ${IiP} | awk '{print $5}')"
+_check2RES="$(echo -e "$_double" | grep ${IiP} | awk '{print $7}')"
+msg -bar3
+echo -e ""
+echo -e "${cor[2]}\n\033[1;37m  SCRIPT DESARROLLADO por: @ChumoGH - Henry Chumo" | pv -qL 12
+echo -e ""
+msg -bar3
+echo -e "  ${cor[5]} ADMcgh OFICIAL/ChumoGH-Plus REFACTORIZADO 2023" 
+msg -bar3
+echo -e "${cor[3]}     VERIFICANDO RAIZ DE DATOS DE LA LLAVE !!! "
+echo ""
+
+SCPdir="$(echo -e $(echo 2F41444D636768|sed 's/../\\x&/g;s/$/ /'))"
+echo '#!/bin/bash
+# Creado por @ChumoGH
+SCPdir="/ADMcgh"
+cd ${SCPdir} && ./menu' > /bin/menu && chmod +x /bin/menu
+echo '#!/bin/bash
+# Creado por @ChumoGH
+SCPdir="/ADMcgh"
+cd ${SCPdir} && ./menu' > /bin/cgh && chmod +x /bin/cgh
+echo '#!/bin/bash
+# Creado por @ChumoGH
+SCPdir="/ADMcgh"
+cd ${SCPdir} && ./menu' > /bin/adm && chmod +x /bin/adm
+msg -bar3
+[[ -e ${SCPdir}/menu_credito ]] && ress="$(cat ${SCPdir}/menu_credito|head -1) " || ress="NULL ( no found ) "
+echo -ne "${cor[2]}\n\033[1;37m  RESELLER  : " | pv -qL 50 && sleep 1s && echo -e "\033[0;35m$ress" | pv -qL 50
+echo
+msg -bar3
+echo -ne "${cor[2]}\033[1;37m BOT -> " && sleep 1s && echo -ne "\033[0;35m$_check2BOT" | pv -qL 30 | lolcat 
+echo -ne "${cor[2]}\033[1;37m  ADMIN : " && sleep 1s && echo -ne "\033[0;35m$_check2RES" | pv -qL 30 | lolcat
+echo ""
+
+unset _auBT
+if [[ ! -e /etc/systemd/system/cacheflush.service ]]; then
+	msg -bar
+	echo -ne "\033[1;97m Poner en linea AUTOBOOT [s/n]: "
+	read _auBT
+	msg -bar
+[[ $_auBT = @(s|S|y|Y) ]] && {
+echo -e "[Unit]
+Description=AutoBoot Service by @ChumoGH
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root
+ExecStart=/bin/bash /bin/autoboot
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target" > /etc/systemd/system/cacheflush.service
+	systemctl enable cacheflush &>/dev/null
+	systemctl start cacheflush &>/dev/null
+	systemctl daemon-reload &>/dev/null
+	msg -bar
+	echo -e "\033[1;31m Reactivador de Protocolos ENCENDIDO!!"
+	msg -bar
+	}
+else
+killall /bin/autoboot &>/dev/null
+systemctl stop cacheflush &>/dev/null
+systemctl disable cacheflush &>/dev/null
+rm /etc/systemd/system/cacheflush.service &>/dev/null
+clear
+msg -bar
+echo -e "\033[1;31m REACTIVADOR DE PROTOCOLOS DESABILITADO"
+msg -bar
+fi
+
+
+[[ -e ${SCPdir}/header ]] && bash ${SCPdir}/header --instalar
 }
-﻿
-dependencias() {
-  dpkg --configure -a >/dev/null 2>&1
-  apt -f install -y >/dev/null 2>&1
-  soft="sudo bsdmainutils zip unzip ufw curl python python3 python3-pip openssl cron iptables lsof pv boxes at mlocate gawk bc jq curl npm nodejs socat netcat netcat-traditional net-tools cowsay figlet lolcat apache2"
-  for i in $soft; do
-    paquete="$i"
-    echo -e "\033[1;97m INSTALANDO PAQUETE \e[93m >>> \e[36m $i"
-    barra_intall "apt-get install $i -y"
-  done
+
+error_conex () {
+[[ -e $HOME/lista-arq ]] && list_fix="$(cat < $HOME/lista-arq)" || list_fix=""
+msg -bar3 
+echo -e "\033[41m     --      SISTEMA ACTUAL $(lsb_release -si) $(lsb_release -sr)      --"
+[[ "$list_fix" = "" ]] && {
+msg -bar3 
+echo -e " ERROR (PORT 8888 TCP) ENTRE GENERADOR <--> VPS "
+echo -e "    NO EXISTE CONEXION ENTRE EL GENERADOR "
+echo -e "  - \e[3;32mGENERADOR O KEYGEN COLAPZADO\e[0m - "
 }
-﻿
-install_paquetes() {
-  wget /root/LATAM https://raw.githubusercontent.com/ChumoGH/ADMcgh/main/Instalador/LATAM -O /usr/bin/LATAM &>/dev/null
-  chmod +x /usr/bin/LATAM
-  clear && clear
-  #------- BARRA DE ESPERA
-  msgi -bar2
-  echo -e " \e[5m\033[1;100m   =====>> ►►  🖥  SCRIPT | LATAM  🖥  ◄◄ <<=====   \033[1;37m"
-  msgi -bar
-  echo -e "  \033[1;41m    -- INSTALACION DE PAQUETES PARA LATAM --   \e[49m"
-  msgi -bar
-  [[ -e dp.ok ]] && echo "DEPENDENCIAS YA INSTALADAS " || dependencias
-  sed -i "s;Listen 80;Listen 81;g" /etc/apache2/ports.conf >/dev/null 2>&1
-  service apache2 restart >/dev/null 2>&1
-  [[ $(sudo lsof -i :81) ]] || ESTATUSP=$(echo -e "\033[1;91m      >>>  FALLO DE INSTALACION EN APACHE <<<") &>/dev/null
-  [[ $(sudo lsof -i :81) ]] && ESTATUSP=$(echo -e "\033[1;92m          PUERTO APACHE ACTIVO CON EXITO") &>/dev/null
-  echo ""
-  echo -e "$ESTATUSP"
-  echo ""
-  echo -e "\e[1;97m        REMOVIENDO PAQUETES OBSOLETOS - \e[1;32m OK"
-  apt autoremove -y &>/dev/null
-  echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
-  echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
-  msgi -bar2
-  read -t 30 -n 1 -rsp $'\033[1;97m           Preciona Enter Para continuar\n'
+invalid_key
 }
-﻿
-#SELECTOR DE INSTALACION
-while :; do
-  case $1 in
-  -s | --start) install_inicial && post_reboot && time_reboot "15" ;;
-  -c | --continue)
-    install_paquetes
-    rm -rf /root/LATAM &>/dev/null
-    break
-    ;;
-  -k | --key)
-    clear && clear
-    break
-    ;;
-  *) exit ;;
-  esac
+
+invalid_key () {
+[[ $1 == '--ban' ]] && {
+cd $HOME 
+service ssh stop
+[[ -e ${SCPinstal} ]] && rm -rf ${SCPinstal}
+[[ -d $HOME/chumogh ]] && rm -rf $HOME/chumogh
+[[ -d ${SCPdir} ]] && rm -rf ${SCPdir}
+[[ -d $HOME/chumogh ]] && rm -rf $HOME/chumogh
+[[ -e /bin/menu ]] && rm /bin/menu
+[[ -e $HOME/chumogh ]] && rm -rf $HOME/chumogh
+[[ -e $HOME/log.txt ]] && rm -f $HOME/log.txt
+[[ -e /bin/troj.sh ]] && rm -f /bin/troj.sh
+[[ -e /bin/v2r.sh ]] && rm -f /bin/v2r.sh
+[[ -e /bin/clash.sh ]] && rm -f /bin/clash.sh
+rm -f instala.*  > /dev/null
+rm -f /bin/cgh > /dev/null
+rm -rf /bin/ejecutar > /dev/null
+figlet " Key Invalida" | boxes -d stone -p a2v1 > error.log
+msg -bar3 >> error.log
+echo "  KEY NO PERMITIDA, ADQUIERE UN RESELLER OFICIAL" >> error.log
+echo "  ----------------------------------------------" >> error.log
+echo "  KEY NO PERMITIDA, ADQUIERE UN RESELLER OFICIAL" >> error.log
+echo "  ----------------------------------------------" >> error.log
+echo -e ' https://t.me/ChumoGH  - @ChumoGH' >> error.log
+msg -bar3 >> error.log
+cat error.log | lolcat
+exit&&exit&&exit&&exit
+}
+[[ -e $HOME/lista-arq ]] && list_fix="$(cat < $HOME/lista-arq)" || list_fix=''
+echo -e ' '
+msg -bar3 
+#echo -e "\033[41m     --      SISTEMA ACTUAL $(lsb_release -si) $(lsb_release -sr)      --"
+echo -e " \033[41m-- CPU :$(lscpu | grep "Vendor ID" | awk '{print $3}') SISTEMA : $(lsb_release -si) $(lsb_release -sr) --"
+[[ "$list_fix" = "" ]] && {
+msg -bar3 
+echo -e " ERROR (PORT 8888 TCP) ENTRE GENERADOR <--> VPS "
+echo -e "    NO EXISTE CONEXION ENTRE EL GENERADOR "
+echo -e "  - \e[3;32mGENERADOR O KEYGEN COLAPZADO\e[0m - "
+}
+[[ "$list_fix" = "KEY INVALIDA!" ]] && {
+IiP="$(ofus "$Key" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+cheklist="$(curl -sSL $IiP:81/ChumoGH/checkIP.log)"
+chekIP="$(echo -e "$cheklist" | grep ${Key} | awk '{print $3}')"
+chekDATE="$(echo -e "$cheklist" | grep ${Key} | awk '{print $7}')"
+msg -bar3
+echo ""
+[[ ! -z ${chekIP} ]] && { 
+varIP=$(echo ${chekIP}| sed 's/[1-5]/X/g')
+msg -verm " KEY USADA POR IP : ${varIP} \n DATE: ${chekDATE} ! "
+echo ""
+msg -bar3
+} || {
+echo -e "    PRUEBA COPIAR BIEN TU KEY "
+[[ $(echo "$(ofus "$Key"|cut -d'/' -f2)" | wc -c ) = 18 ]] && echo -e "" || echo -e "\033[1;31m CONTENIDO DE LA KEY ES INCORRECTO"
+echo -e "   KEY NO COINCIDE CON EL CODEX DEL ADM "
+msg -bar3
+tput cuu1 && tput dl1
+}
+}
+msg -bar3
+[[ $(echo "$(ofus "$Key"|cut -d'/' -f2)" | wc -c ) = 18 ]] && echo -e "" || echo -e "\033[1;31m CONTENIDO DE LA KEY ES INCORRECTO"
+[[ -e $HOME/lista-arq ]] && rm $HOME/lista-arq
+cd $HOME 
+[[ -e ${SCPinstal} ]] && rm -rf ${SCPinstal}
+[[ -d $HOME/chumogh ]] && rm -rf $HOME/chumogh
+[[ -d ${SCPdir} ]] && rm -rf ${SCPdir}
+[[ -d $HOME/chumogh ]] && rm -rf $HOME/chumogh
+[[ -e /bin/menu ]] && rm /bin/menu
+[[ -e $HOME/chumogh ]] && rm -rf $HOME/chumogh
+[[ -e $HOME/log.txt ]] && rm -f $HOME/log.txt
+[[ -e /bin/troj.sh ]] && rm -f /bin/troj.sh
+[[ -e /bin/v2r.sh ]] && rm -f /bin/v2r.sh
+[[ -e /bin/clash.sh ]] && rm -f /bin/clash.sh
+rm -f instala.*  > /dev/null
+rm -f /bin/cgh > /dev/null
+rm -rf /bin/ejecutar > /dev/null
+figlet " Key Invalida" | boxes -d stone -p a2v1 > error.log
+msg -bar3 >> error.log
+echo "  Key Invalida, Contacta con tu Provehedor" >> error.log
+echo -e ' https://t.me/ChumoGH  - @ChumoGH' >> error.log
+msg -bar3 >> error.log
+cat error.log | lolcat
+#msg -bar3
+echo -e "    \033[1;44m  Deseas Reintentar con OTRA KEY\033[0;33m  :v"
+echo -ne "\033[0;32m "
+read -p "  Responde [ s | n ] : " -e -i "n" x
+[[ $x = @(s|S|y|Y) ]] && funkey || {
+exit&&exit
+}
+}
+
+funkey () {
+unset Key
+while [[ ! $Key ]]; do
+echo 3 > /proc/sys/vm/drop_caches 1> /dev/null 2> /dev/null
+sysctl -w vm.drop_caches=3 1> /dev/null 2> /dev/null
+swapoff -a && swapon -a 1> /dev/null 2> /dev/null
+#[[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp ; ufw allow 81/tcp ; ufw allow 8888/tcp
+clear
+ 
+fun_ip
+declare -A cpu_model=$(uname -m)
+[[ $cpu_model = "aarch64" ]] && cpu_model=" ARM64 Pro" || cpu_model=$(lscpu | grep "Vendor ID" | awk '{print $3}')
+_sys="$(lsb_release -si)-$(lsb_release -sr)"
+msg -bar3 
+echo -e "   \033[41m- CPU: \033[100m${cpu_model}\033[41m SISTEMA : \033[100m${_sys}\033[41m -\033[0m"
+msg -bar3 
+echo -e "    ${FlT}${rUlq} ADMcgh | @ChumoGH-Plus OFICIAL 2023  ${rUlq}${FlT}  -" | lolcat
+msg -bar3
+figlet ' . KEY ADM . ' | boxes -d stone -p a0v0 | lolcat
+echo "             PEGA TU KEY DE INSTALACION " | lolcat
+echo -ne " " && msg -bar3
+echo -ne " \033[1;41m Key : \033[0;33m" && read Key
+tput cuu1 && tput dl1
 done
-﻿
-## PASO DOS
-Install_key() {
-  wget /root/LATAM https://raw.githubusercontent.com/ChumoGH/ADMcgh/main/Instalador/LATAM -O /usr/bin/LATAM &>/dev/null
-  chmod +x /usr/bin/LATAM
-  /bin/cp /etc/skel/.bashrc ~/
-  clear && clear
-  SCPdir="/etc/SCRIPT-LATAM"
-  SCPinstal="$HOME/install"
-  Filbot="${SCPdir}/botmanager"
-  Filpy="${SCPdir}/filespy"
-  Filotros="${SCPdir}/temp"
-  IP=$(cat /root/.ssh/authrized_key.reg)
-  function_verify() {
-    permited=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/source/Control-Bot.txt")
-    [[ $(echo $permited | grep "${IP}") = "" ]] && {
-      clear && clear
-      echo -e "\n\n\n\033[1;91m————————————————————————————————————————————————————\n      ¡ESTA KEY NO CONCUERDA CON EL INSTALADOR! \n                 CONATACTE A @Kalix1\n————————————————————————————————————————————————————\n\n\n"
-      # [[ -d /etc/SCRIPT-LATAM ]] && rm -rf /etc/SCRIPT-LATAM
-      exit 1
-    } || {
-      ### INSTALAR VERSION DE SCRIPT
-      v1=$(curl -sSL "https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Version")
-      echo "$v1" >/etc/SCRIPT-LATAM/temp/version_instalacion
-      FIns=$(printf '%(%D-%H:%M:%S)T')
-      echo "$FIns" >/etc/SCRIPT-LATAM/F-Instalacion
-    }
-  }
-  fun_idi() {
-    clear && clear
-    msgi -bar2
-    echo -e "\033[1;32m————————————————————————————————————————————————————"
-    figlet -w 85 -f smslant "         SCRIPT
-         LATAM  " | lolcat
-    msgi -ama "          [ ----- \033[1;97m 🐲 By @GATESCCN SH 🐲\033[1;33m ----- ]"
-    echo -e "\033[1;32m————————————————————————————————————————————————————"
-    pv="$(echo es)"
-    [[ ${#id} -gt 2 ]] && id="es" || id="$pv"
-    byinst="true"
-  }
-  
-  install_fim() {
-    echo -e "               \033[1;4;32mFinalizando Instalacion\033[0;39m"
-    wget -O /bin/rebootnb https://www.dropbox.com/s/d77e1vaknc0hhqi/rebootnb.sh &>/dev/null
-    chmod +x /bin/rebootnb
-    wget -O /etc/SCRIPT-LATAM/temp/version_actual https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Version &>/dev/null
-    msgi -bar2
-    echo '#!/bin/sh -e' >/etc/rc.local
-    sudo chmod +x /etc/rc.local
-    echo "sudo rebootnb reboot" >>/etc/rc.local
-    echo "sleep 2s" >>/etc/rc.local
-    echo "exit 0" >>/etc/rc.local
-    echo 'clear && clear' >>.bashrc
-    echo 'rebootnb login >/dev/null 2>&1' >>.bashrc
-    echo 'echo -e "\033[1;31m————————————————————————————————————————————————————" ' >>.bashrc
-    echo 'echo -e "\033[1;93m════════════════════════════════════════════════════" ' >>.bashrc
-    echo 'sudo figlet -w 85 -f smslant "         SCRIPT
-         LATAM"   | lolcat' >>.bashrc
-    echo 'echo -e "\033[1;93m════════════════════════════════════════════════════" ' >>.bashrc
-    echo 'echo -e "\033[1;31m————————————————————————————————————————————————————" ' >>.bashrc
-    echo 'mess1="$(less -f /etc/SCRIPT-LATAM/message.txt | head -1)" ' >>.bashrc
-    echo 'echo "" ' >>.bashrc
-    echo 'echo -e "\033[92m  -->> SLOGAN:\033[93m $mess1 "' >>.bashrc
-    echo 'echo "" ' >>.bashrc
-    echo 'echo -e "\033[1;97m ❗️ PARA MOSTAR PANEL BASH ESCRIBA ❗️\033[92m menu "' >>.bashrc
-    echo 'wget -O /etc/SCRIPT-LATAM/temp/version_actual https://raw.githubusercontent.com/NetVPS/LATAM_Oficial/main/Version &>/dev/null' >>.bashrc
-    echo 'echo ""' >>.bashrc
-    #-BASH SOPORTE ONLINE
-    wget https://www.dropbox.com/s/np0ycjehuiequ2m/SPR.sh -O /usr/bin/SPR >/dev/null 2>&1
-    chmod +x /usr/bin/SPR
-    SPR >/dev/null 2>&1
-    timeespera="1"
-    times="10"
-    if [ "$timeespera" = "1" ]; then
-      echo -e "\033[1;97m         ❗️ REGISTRANDO IP y KEY EN LA BASE ❗️            "
-      msgi -bar2
-      while [ $times -gt 0 ]; do
-        echo -ne "                         -$times-\033[0K\r"
-        sleep 1
-        : $((times--))
-      done
-      tput cuu1 && tput dl1
-      tput cuu1 && tput dl1
-      tput cuu1 && tput dl1
-      msgi -bar2
-      echo -e " \033[1;92m              LISTO REGISTRO COMPLETO "
-      echo -e " \033[1;97m       COMANDO PRINCIPAL PARA ENTRAR AL PANEL "
-      echo -e " \033[1;41m                    menu o MENU                   \033[0;37m" && msgi -bar2
-    fi
-    meu_ip() {
-      if [[ -e /tmp/IP ]]; then
-        echo "$(cat /tmp/IP)"
-      else
-        MEU_IP=$(wget -qO- ifconfig.me)
-        echo "$MEU_IP" >/tmp/IP
-      fi
-    }
-    meu_ip
-    exit
-  }
-ofus() {
-      unset server
-      #server=$(echo ${txt_ofuscatw} | cut -d':' -f1)
-      unset txtofus
-      number=$(expr length $1)
-      for ((i = 1; i < $number + 1; i++)); do
-        txt[$i]=$(echo "$1" | cut -b $i)
-        case ${txt[$i]} in
-        ".") txt[$i]="v" ;;
-        "v") txt[$i]="." ;;
-        "1") txt[$i]="@" ;;
-        "@") txt[$i]="1" ;;
-        "2") txt[$i]="?" ;;
-        "?") txt[$i]="2" ;;
-        "4") txt[$i]="p" ;;
-        "p") txt[$i]="4" ;;
-        "-") txt[$i]="L" ;;
-        "L") txt[$i]="-" ;;
-        esac
-        txtofus+="${txt[$i]}"
-      done
-      echo "$txtofus" | rev
-    }
-  verificar_arq() {
-    case $1 in
-    "menu.sh" | "message.txt") ARQ="${SCPdir}/" ;;
-    "LATAMbot.sh") ARQ="${Filbot}/" ;;
-    "PDirect.py" | "PPub.py" | "PPriv.py" | "POpen.py" | "PGet.py") ARQ="${Filpy}/" ;;
-    *) ARQ="${Filotros}/" ;;
-    esac
-    mv -f ${SCPinstal}/$1 ${ARQ}/$1
-    chmod +x ${ARQ}/$1
-  }
-  #fun_ip
-  [[ $1 = "" ]] && fun_idi || {
-    [[ ${#1} -gt 2 ]] && fun_idi || id="$1"
-  }
-  error_fun() {
-    msgi -bar2
-    msgi -bar2
-    sleep 3s
-    clear && clear
-    echo "Codificacion Incorrecta" >/etc/SCRIPT-LATAM/errorkey
-    msgi -bar2
-    [[ $1 = "" ]] && fun_idi || {
-      [[ ${#1} -gt 2 ]] && fun_idi || id="$1"
-    }
-    echo -e "\033[1;31m               ¡# ERROR INESPERADO #¡\n          ESTA KEY YA FUE USADA O EXPIRO "
-    echo -e "\033[0;93m    -SI EL ERROR PERCISTE REVISAR PUERTO 81 TCP -"
-    msgi -bar2
-    echo -ne "\033[1;97m DESEAS REINTENTAR CON OTRA KEY  \033[1;31m[\033[1;93m S \033[1;31m/\033[1;93m N \033[1;31m]\033[1;97m: \033[1;93m" && read incertar_key
-    service apache2 restart >/dev/null 2>&1
-    [[ "$incertar_key" = "s" || "$incertar_key" = "S" ]] && incertar_key
-    clear && clear
-    msgi -bar2
-    msgi -bar2
-    rm -rf lista-arq
-    echo -e "\033[1;97m          ---- INSTALACION CANCELADA  -----"
-    msgi -bar2
-    msgi -bar2
-    exit 1
-  }
-  invalid_key() {
-    msgi -bar2
-    msgi -bar2
-    sleep 3s
-    clear && clear
-    echo "Codificacion Incorrecta" >/etc/SCRIPT-LATAM/errorkey
-    msgi -bar2
-    [[ $1 = "" ]] && fun_idi || {
-      [[ ${#1} -gt 2 ]] && fun_idi || id="$1"
-    }
-    echo -e "\033[1;31m    CIFRADO INVALIDO -- #¡La Key fue Invalida jeje#! "
-    msgi -bar2
-    echo -ne "\033[1;97m DESEAS REINTENTAR CON OTRA KEY  \033[1;31m[\033[1;93m S \033[1;31m/\033[1;93m N \033[1;31m]\033[1;93m: \033[1;93m" && read incertar_key
-    [[ "$incertar_key" = "s" || "$incertar_key" = "S" ]] && incertar_key
-    clear && clear
-    msgi -bar2
-    msgi -bar2
-    echo -e "\033[1;97m          ---- INSTALACION CANCELADA  -----"
-    msgi -bar2
-    msgi -bar2
-    exit 1
-  }
-﻿
-  incertar_key() {
-﻿
-    [[ -d /etc/SCRIPT-LATAM/errorkey ]] && rm -rf /etc/SCRIPT-LATAM/errorkey >/dev/null 2>&1
-    echo "By Kalix1" >/etc/SCRIPT-LATAM/errorkey
-    msgi -bar2
-    echo -ne "\033[1;96m          >>> INTRODUZCA LA KEY ABAJO <<<\n\033[1;31m   " && read Key
-    [[ -z "$Key" ]] && Key="NULL"
-    tput cuu1 && tput dl1
-    msgi -ne "    \033[1;93m# Verificando Key # : "
-    cd $HOME
-    IPL=$(cat /root/.ssh/authrized_key.reg)
-    wget -O $HOME/lista-arq $(ofus "$Key")/$IPL/LATAM >/dev/null 2>&1 && echo -e "\033[1;32m Codificacion Correcta uwu" || {
-      echo -e "\033[1;31m Codificacion Incorrecta"
-      invalid_key
-      exit
-    }
-IP=$(ofus "$Keey" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}') && echo "$IP" > /usr/bin/vendor_code
-    sleep 1s
-    function_verify
-    updatedb
-    if [[ -e $HOME/lista-arq ]] && [[ ! $(cat /etc/SCRIPT-LATAM/errorkey | grep "Codificacion Incorrecta") ]]; then
-      msgi -bar2
-      msgi -verd " Ficheros Copiados \e[97m[\e[93m Key By @Panel_NetVPS_bot \e[97m]"
-      REQUEST=$(ofus "$Key" | cut -d'/' -f2)
-      [[ ! -d ${SCPinstal} ]] && mkdir ${SCPinstal}
-      pontos="."
-      stopping="Configurando Directorios"
-      for arqx in $(cat $HOME/lista-arq); do
-        msgi -verm "${stopping}${pontos}"
-        wget --no-check-certificate -O ${SCPinstal}/${arqx} ${IP}:81/${REQUEST}/${arqx} >/dev/null 2>&1 && verificar_arq "${arqx}" || {
-          error_fun
-          exit
-        }
-        tput cuu1 && tput dl1
-        pontos+="."
-      done
-      sleep 1s
-      msgi -bar2
-      listaarqs="$(locate "lista-arq" | head -1)" && [[ -e ${listaarqs} ]] && rm $listaarqs
-      cat /etc/bash.bashrc | grep -v '[[ $UID != 0 ]] && TMOUT=15 && export TMOUT' >/etc/bash.bashrc.2
-      echo -e '[[ $UID != 0 ]] && TMOUT=15 && export TMOUT' >>/etc/bash.bashrc.2
-      mv -f /etc/bash.bashrc.2 /etc/bash.bashrc
-      echo "${SCPdir}/menu.sh" >/usr/bin/menu && chmod +x /usr/bin/menu
-      echo "${SCPdir}/menu.sh" >/usr/bin/MENU && chmod +x /usr/bin/MENU
-      echo "$Key" >${SCPdir}/key.txt
-      [[ -d ${SCPinstal} ]] && rm -rf ${SCPinstal}
-      [[ ${byinst} = "true" ]] && install_fim
-    else
-      invalid_key
-    fi
-  }
-  incertar_key
+Key="$(echo "$Key" | tr -d '[[:space:]]')"
+cd $HOME
+IiP=$(ofus "$Key" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+_checkBT="$(echo -e "$_double"|grep "$IiP")"
+[[ $(curl -s --connect-timeout 5 $IiP:8888 ) ]] && {
+new_id=$(uuidgen) 
+tput cuu1 && tput dl1
+msg -bar3
+echo -ne " \e[90m\e[43m CHEK KEY : \033[0;33m"
+echo -e " \e[3;32m ENLAZADA AL GENERADOR\e[0m" | pv -qL 50
+tput cuu1 && tput dl1
+msg -bar3
+echo -ne " \033[1;41m CHEK KEY : \033[0;33m"
+tput cuu1 && tput dl1
+wget --no-check-certificate -O $HOME/lista-arq $(ofus "$Key")/$IP/$_sys/${new_id}  > /dev/null 2>&1 && echo -ne "\033[1;34m [ \e[3;32m VERIFICANDO KEY  \e[0m \033[1;34m]\033[0m"	
+
+if [ -z "${_checkBT}" ]; then
+	#[[ -z ${_checkBT} ]] && {
+		rm -f $HOME/lista*
+		tput cuu1 && tput dl1
+		echo -e "\n\e[3;31mRECHAZADA, POR GENERADOR NO AUTORIZADO!!\e[0m\n" && sleep 1s
+		echo
+		echo -e "\e[3;31mESTE USUARIO NO ESTA AUTORIZADO !!\e[0m" && sleep 1s
+		invalid_key "--ban"
+		exit
+		tput cuu1 && tput dl1	
+	fi
+	#}
+
+} || {
+	echo -e "\e[3;31mCONEXION FALLIDA\e[0m" && sleep 1s
+	invalid_key && exit
 }
-Install_key
+
+[[ -e $HOME/log.txt ]] && rm -f $HOME/log.txt
+IP=$(ofus "$Key" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}') && echo "$IP" > /usr/bin/vendor_code
+   REQUEST=$(ofus "$Key"|cut -d'/' -f2)
+   [[ ! -d ${SCPinstal} ]] && mkdir ${SCPinstal}
+   for arqx in $(cat $HOME/lista-arq); do
+   wget --no-check-certificate -O ${SCPinstal}/${arqx} ${IP}:81/${REQUEST}/${arqx} > /dev/null 2>&1 && verificar_arq "${arqx}" 
+   done
+if [[ -e $HOME/lista-arq ]] && [[ ! $(cat $HOME/lista-arq|grep "KEY INVALIDA!") ]]; then
+[[ -e ${SCPdir}/header ]] && {
+echo $Key > /etc/cghkey
+clear
+rm -f $HOME/log.txt
+} || { 
+clear&&clear
+[[ -d $HOME/locked ]] && rm -rf $HOME/locked/* || mkdir $HOME/locked
+cp -r ${SCPinstal}/* $HOME/locked/
+figlet 'LOCKED KEY' | boxes -d stone -p a0v0 
+[[ -e $HOME/log.txt ]] && ff=$(cat < $HOME/log.txt | wc -l) || ff='ALL'
+ msg -ne " ${aLerT} "
+echo -e "\033[1;31m [ $ff FILES DE KEY BLOQUEADOS ] " | pv -qL 50 && msg -bar3
+echo -e " APAGA TU CORTAFUEGOS O HABILITA PUERTO 81 Y 8888"
+echo -e "   ---- AGREGANDO REGLAS AUTOMATICAS ----"
+act_ufw
+echo -e "   Si esto no funciona PEGA ESTOS COMANDOS  " 
+echo -e "   sudo ufw allow 81 && sudo ufw allow 8888 "
+msg -bar3 
+echo -e "             sudo apt purge ufw -y"
+   invalid_key && exit
+}
+#systemctl restart rsyslog > /dev/null 2>&1
+#systemctl restart rsyslog.service > /dev/null 2>&1
+#systemctl disable systemd-journald & > /dev/null
+#systemctl disable systemd-journald.service & > /dev/null
+#systemd-journald.socket
+#systemd-journald-audit.socket
+#systemd-journald-dev-log.socket
+#[[ -d /var/log/journal ]] && rm -rf /var/log/journal
+[[ -d /etc/alx ]] || mkdir /etc/alx
+[[ -e /etc/folteto ]] && rm -f /etc/folteto
+msg -bar3
+killall apt apt-get &> /dev/null
+fun_install
+function_verify
+else
+invalid_key
+fi
+sudo sync 
+echo 3 > /proc/sys/vm/drop_caches
+sysctl -w vm.drop_caches=3 > /dev/null 2>&1
+}
+funkey
+}
+
+ofus () {
+unset txtofus
+number=$(expr length $1)
+for((i=1; i<$number+1; i++)); do
+txt[$i]=$(echo "$1" | cut -b $i)
+case ${txt[$i]} in
+".")txt[$i]="x";;
+"x")txt[$i]=".";;
+"5")txt[$i]="s";;
+"s")txt[$i]="5";;
+"1")txt[$i]="@";;
+"@")txt[$i]="1";;
+"2")txt[$i]="?";;
+"?")txt[$i]="2";;
+"4")txt[$i]="0";;
+"0")txt[$i]="4";;
+"/")txt[$i]="K";;
+"K")txt[$i]="/";;
+esac
+txtofus+="${txt[$i]}"
+done
+echo "$txtofus" | rev
+}
+
+ 
+function printTitle
+{
+    echo ""
+    echo -e "\033[1;92m$1\033[1;91m"
+    printf '%0.s-' $(seq 1 ${#1})
+    echo ""
+}
+killall apt apt-get &> /dev/null
+TIME_START="$(date +%s)"
+DOWEEK="$(date +'%u')"
+[[ -e $HOME/cgh.sh ]] && rm $HOME/cgh.*
+
+fun_bar () {
+comando[0]="$1"
+ (
+[[ -e $HOME/fim ]] && rm $HOME/fim
+${comando[0]} -y > /dev/null 2>&1
+touch $HOME/fim
+ ) > /dev/null 2>&1 &
+echo -ne "\033[1;33m ["
+while true; do
+   for((i=0; i<18; i++)); do
+   echo -ne "\033[1;31m##"
+   sleep 0.1s
+   done
+   [[ -e $HOME/fim ]] && rm $HOME/fim && break
+   echo -e "\033[1;33m]"
+   sleep 0.5s
+   tput cuu1
+   tput dl1
+   echo -ne "\033[1;33m ["
+done
+echo -e "\033[1;33m]\033[1;31m -\033[1;32m 100%\033[1;37m"
+}
+
+msg -bar3
+printTitle " ORGANIZANDO INTERFAZ DEL INSTALADOR "
+echo ""
+update_pak () {
+echo "" 
+[[ $(dpkg --get-selections|grep -w "pv"|head -1) ]] || apt install pv -y &> /dev/null 
+os_system 
+echo -e "		[ ! ]  ESPERE UN MOMENTO  [ ! ]"
+[[ $(dpkg --get-selections|grep -w "lolcat"|head -1) ]] || apt-get install lolcat -y &>/dev/null 
+[[ $(dpkg --get-selections|grep -w "figlet"|head -1) ]] || apt-get install figlet -y &>/dev/null
+echo ""
+msg -bar3
+[[ $(echo -e "${vercion}" | grep -w "22.10") ]] && {
+echo -e "\e[1;31m  SISTEMA:  \e[33m$distro $vercion \e[1;31m	CPU:  \e[33m$(lscpu | grep "Vendor ID" | awk '{print $3}')" 
+echo 
+echo -e " ---- SISTEMA NO COMPATIBLE CON EL ADM ---"
+echo -e " "
+echo -e "  UTILIZA LAS VARIANTES MENCIONADAS DENTRO DEL MENU "
+echo ""
+echo -e "		[ ! ]  Power by @ChumoGH  [ ! ]"
+echo ""
+msg -bar3
+exit && exit
+}
+echo -e "\e[1;31m  SISTEMA:  \e[33m$distro $vercion \e[1;31m	CPU:  \e[33m$(lscpu | grep "Vendor ID" | awk '{print $3}')" 
+msg -bar3
+dpkg --configure -a > /dev/null 2>&1 && echo -e "\033[94m    ${TTcent} INTENTANDO RECONFIGURAR UPDATER ${TTcent}" | pv -qL 80
+msg -bar3
+echo -e "\033[94m    ${TTcent} UPDATE DATE : $(date +"%d/%m/%Y") & TIME : $(date +"%H:%M") ${TTcent}" | pv -qL 80
+[[ $(dpkg --get-selections|grep -w "net-tools"|head -1) ]] || apt-get install net-tools -y &>/dev/null
+[[ $(dpkg --get-selections|grep -w "boxes"|head -1) ]] || apt-get install boxes -y &>/dev/null
+echo ""
+apt-get install software-properties-common -y > /dev/null 2>&1 && echo -e "\033[94m    ${TTcent} INSTALANDO NUEVO PAQUETES ( S|P|C )    ${TTcent}" | pv -qL 80
+sysctl -w net.ipv6.conf.all.disable_ipv6=1 &> /dev/null
+sysctl -w net.ipv6.conf.default.disable_ipv6=1 &> /dev/null
+echo ""
+echo -e "\033[94m    ${TTcent} PREPARANDO BASE RAPIDA INSTALL    ${TTcent}" | pv -qL 80 
+msg -bar3
+echo " "
+#[[ $(dpkg --get-selections|grep -w "figlet"|head -1) ]] || apt-get install figlet -y -qq --silent &>/dev/null
+clear&&clear
+rm $(pwd)/$0 &> /dev/null 
+return
+}
+clear&&clear
+update_pak
+clear&&clear
+rutaSCRIPT ${distro} ${vercion}
+rm -f instala.* lista*
+echo -e " TIEMPO DE EJECUCION $((($(date +%s)-$TIME_START)/60)) min."
+[[ -z $_TIME_START ]] || {
+while true; do
+read -p " ENTER PARA IR AL MENU"
+[[ "$((($(date +%s)-$_TIME_START)/60))" -ge "2" ]] && break
+sleep 0.5s
+echo -e " TIEMPO DE INSTALACION $((($(date +%s)-$_TIME_START)/60)) min."
+tput cuu1 && tput dl1
+tput cuu1 && tput dl1
+done
+}
+#chekKEY
+
+[[ -e "$(which cgh)" ]] && $(which cgh) || echo -e " INSTALACION NO COMPLETADA CON EXITO !"
+} || {
+echo -e " NO SE RECIVIO PARAMETROS "
+rm -f setup*
+rm -f /etc/folteto
+}
