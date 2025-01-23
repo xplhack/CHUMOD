@@ -3,7 +3,6 @@
 #Alias : @ChumoGH
 # -*- ENCODING: UTF-8 -*-
 apt --fix-broken install
-#apt update && apt list --upgradabe && apt upgrade -y
 apt update && apt list --upgradeable && apt upgrade -y
 export PATH=$PATH:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/sbin:/bin:/usr/games;
 fecha=`date +"%d-%m-%y"`;
@@ -31,7 +30,7 @@ os_system(){
  }
 
 rutaSCRIPT () {
-rm -f setup
+rm -f setup*
 act_ufw() {
 [[ -f "/usr/sbin/ufw" ]] && ufw allow 81/tcp ; ufw allow 8888/tcp
 }
@@ -84,10 +83,7 @@ fi
 
 function_verify () {
 #echo "verify" > $(echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g;s/$/ /'))
-#este devuelve /usr/lib/licence
 echo 'MOD @ChumoGH ChumoGHADM' > $(echo -e $(echo 2F7573722F6C69622F6C6963656E6365|sed 's/../\\x&/g;s/$/ /'))
-#echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g')
-#este devuelve /bin/verifysys
 [[ $(dpkg --get-selections|grep -w "libpam-cracklib"|head -1) ]] || apt-get install libpam-cracklib -y &> /dev/null
 echo -e '# Modulo @ChumoGH
 password [success=1 default=ignore] pam_unix.so obscure sha512
@@ -115,7 +111,6 @@ echo -e "${cor[3]}     VERIFICANDO RAIZ DE DATOS DE LA LLAVE !!! "
 echo ""
 
 SCPdir="$(echo -e $(echo 2F41444D636768|sed 's/../\\x&/g;s/$/ /'))"
-#/ADMc hg
 echo '#!/bin/bash
 # Creado por @ChumoGH
 SCPdir="/ADMcgh"
@@ -301,7 +296,7 @@ _sys="$(lsb_release -si)-$(lsb_release -sr)"
 msg -bar3 
 echo -e "   \033[41m- CPU: \033[100m${cpu_model}\033[41m SISTEMA : \033[100m${_sys}\033[41m -\033[0m"
 msg -bar3 
-echo -e "    ${FlT}${rUlq} ADMcgh | @ChumoGH-Plus OFICIAL 20 f23  ${rUlq}${FlT}  -" | lolcat
+echo -e "    ${FlT}${rUlq} ADMcgh | @ChumoGH-Plus OFICIAL 2023  ${rUlq}${FlT}  -" | lolcat
 msg -bar3
 figlet ' . KEY ADM . ' | boxes -d stone -p a0v0 | lolcat
 echo "             PEGA TU KEY DE INSTALACION " | lolcat
@@ -405,7 +400,6 @@ case ${txt[$i]} in
 ".")txt[$i]="x";;
 "x")txt[$i]=".";;
 "5")txt[$i]="s";;
-#"5")txt[$i]="s";;
 "s")txt[$i]="5";;
 "1")txt[$i]="@";;
 "@")txt[$i]="1";;
@@ -522,6 +516,6 @@ done
 [[ -e "$(which cgh)" ]] && $(which cgh) || echo -e " INSTALACION NO COMPLETADA CON EXITO !"
 } || {
 echo -e " NO SE RECIVIO PARAMETROS "
-rm -f setup
+rm -f setup*
 rm -f /etc/folteto
 }
