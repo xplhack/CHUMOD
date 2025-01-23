@@ -286,61 +286,114 @@ exit&&exit
 }
 
 funkey () {
-unset Keey
-while [[ ! $Keey ]]; do
+unset Key
+while [[ ! $Key ]]; do
+echo 3 > /proc/sys/vm/drop_caches 1> /dev/null 2> /dev/null
+sysctl -w vm.drop_caches=3 1> /dev/null 2> /dev/null
+swapoff -a && swapon -a 1> /dev/null 2> /dev/null
+#[[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp ; ufw allow 81/tcp ; ufw allow 8888/tcp
 clear
-export PATH=$PATH:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/sbin:/bin:/usr/games;
-echo -e "\n      \033[1;32m DIGITA TU KEY A VERIFICAR "
-msg -ne "Script Key: " && read Keey
-[[ ! -z $Keey ]] && Keey="$(echo "$Keey" | tr -d '[[:space:]]')"
+ 
+fun_ip
+declare -A cpu_model=$(uname -m)
+[[ $cpu_model = "aarch64" ]] && cpu_model=" ARM64 Pro" || cpu_model=$(lscpu | grep "Vendor ID" | awk '{print $3}')
+_sys="$(lsb_release -si)-$(lsb_release -sr)"
+msg -bar3 
+echo -e "   \033[41m- CPU: \033[100m${cpu_model}\033[41m SISTEMA : \033[100m${_sys}\033[41m -\033[0m"
+msg -bar3 
+echo -e "    ${FlT}${rUlq} ADMcgh | @ChumoGH-Plus OFICIAL 2023  ${rUlq}${FlT}  -" | lolcat
+msg -bar3
+figlet ' . KEY ADM . ' | boxes -d stone -p a0v0 | lolcat
+echo "             PEGA TU KEY DE INSTALACION " | lolcat
+echo -ne " " && msg -bar3
+echo -ne " \033[1;41m Key : \033[0;33m" && read Key
 tput cuu1 && tput dl1
 done
-REQUEST=$(ofus "$Keey"|cut -d'/' -f2)
-echo -e "\n"
-echo -e " FILE Contend : ${REQUEST} $(echo ${REQUEST} | wc -c )" 
-echo -e "\n"
-echo -e " VERIFICA, Si tu key Contiene \033[1;45m KEY DE ChumoGH! \033[0m "
-echo -e "\n"
-msg -ne " Link Key: http://$(ofus $Keey) \n                      " 
-IiP=$(ofus "$Keey" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
-[[ $(curl -s --connect-timeout 2 $IiP:8888 )  ]] && echo -e "\033[1;42mCONEXION CON SERVIDOR EXITOSA\033[0m" || echo -e "\033[1;43mCONEXION CON SERVIDOR FALLIDA\033[0m"
-wget --no-check-certificate -O $HOME/list-key $(ofus $Keey)/$(wget -qO- ipv4.icanhazip.com)/CHECK-KEY/ > /dev/null 2>&1 && echo -ne "\033[1;32m  [ VERIFICANDO ]" || echo -e "\033[1;31m [ No Existe Acceso al KEY ]" #&& echo -e "\033[1;32m [ Key  ]\n" || echo -e "\033[1;31m [ No Existe Acceso al KEY ]"
-ofen=$(wget -qO- $(ofus $Keey))
-unset arqx   
-[[ -d $HOME/install ]] && rm -rf $HOME/install/* || mkdir $HOME/install
-verificar_arq () {
-echo "$1" >> $HOME/install/log.txt
-echo "FILE -> $1" && _sleepColor '0.5'
-#tput cuu1 >&2 && tput dl1 >&2
+Key="$(echo "$Key" | tr -d '[[:space:]]')"
+cd $HOME
+IiP=$(ofus "$Key" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+_checkBT="$(echo -e "$_double"|grep "$IiP")"
+[[ $(curl -s --connect-timeout 5 $IiP:8888 ) ]] && {
+new_id=$(uuidgen) 
+tput cuu1 && tput dl1
+msg -bar3
+echo -ne " \e[90m\e[43m CHEK KEY : \033[0;33m"
+echo -e " \e[3;32m ENLAZADA AL GENERADOR\e[0m" | pv -qL 50
+tput cuu1 && tput dl1
+msg -bar3
+echo -ne " \033[1;41m CHEK KEY : \033[0;33m"
+tput cuu1 && tput dl1
+wget --no-check-certificate -O $HOME/lista-arq $(ofus "$Key")/$IP/$_sys/${new_id}  > /dev/null 2>&1 && echo -ne "\033[1;34m [ \e[3;32m VERIFICANDO KEY  \e[0m \033[1;34m]\033[0m"	
+
+if [ -z "${_checkBT}" ]; then
+	#[[ -z ${_checkBT} ]] && {
+		rm -f $HOME/lista*
+		tput cuu1 && tput dl1
+		echo -e "\n\e[3;31mRECHAZADA, POR GENERADOR NO AUTORIZADO!!\e[0m\n" && sleep 1s
+		echo
+		echo -e "\e[3;31mESTE USUARIO NO ESTA AUTORIZADO !!\e[0m" && sleep 1s
+		invalid_key "--ban"
+		exit
+		tput cuu1 && tput dl1	
+	fi
+	#}
+
+} || {
+	echo -e "\e[3;31mCONEXION FALLIDA\e[0m" && sleep 1s
+	invalid_key && exit
 }
-n=1
-IP=$(ofus "$Keey" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}') && echo "$IP" > /usr/bin/vendor_code
-pontos="."
-stopping=" COMPROBANDO "|sed -e 's/[^a-z -]//ig'
-for arqx in $(cat $HOME/list-key); do
-#msg -verm "${stopping}${pontos}" && sleep 0.5s
-wget --no-check-certificate -O $HOME/install/${arqx} ${IP}:81/${REQUEST}/${arqx} > /dev/null 2>&1 && verificar_arq "${arqx}"
-#tput cuu1 && tput dl1
-#pontos+="."
-n=$(($n + 1))
-done
-echo -ne " ---> ESTADO : \033[1;45m$ofen\033[0m  con "
-[[ ! -e $HOME/install/log.txt ]] && touch $HOME/install/log.txt
-echo " $(cat < $HOME/install/log.txt | wc -l) FILES " && rm -f $HOME/install/log.txt
-msg -ne " \033[1;42mESTADO :\033[0m " 
-[[ -e $HOME/list-key ]] && {
-echo -ne "  "
-[[ $ofen = "KEY DE ChumoGH!" ]] && 
-echo -e "KEY FUNCIONAL" && rm -f $HOME/list-key && echo -ne "\033[0m" 
-} || echo -e " KEY INVALIDA O USADA\033[0m\n"
-#curl -s --connect-timeout 2 ${IiP}:81/${REQUEST}/menu_credito > menu_credito
-msg -ne " RESELLER del Key :\033[0m  "
-[[ -e $HOME/install/menu_credito ]] && {
-echo -ne "  "
-[[ "$(cat $HOME/install/menu_credito | head -1)" = "" ]] && { echo -e "SIN RESELLER\033[0m" 
-} || echo -e "$(cat $HOME/install/menu_credito | head -1)\033[0m" && rm -rf $HOME/install && echo -ne "\033[0m"
-} || echo -e " NO HAY CONTENIDO DE KEY Key\033[0m\n"
-read -p "Enter"
+
+[[ -e $HOME/log.txt ]] && rm -f $HOME/log.txt
+IP=$(ofus "$Key" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}') && echo "$IP" > /usr/bin/vendor_code
+   REQUEST=$(ofus "$Key"|cut -d'/' -f2)
+   [[ ! -d ${SCPinstal} ]] && mkdir ${SCPinstal}
+   for arqx in $(cat $HOME/lista-arq); do
+   wget --no-check-certificate -O ${SCPinstal}/${arqx} ${IP}:81/${REQUEST}/${arqx} > /dev/null 2>&1 && verificar_arq "${arqx}" 
+   done
+if [[ -e $HOME/lista-arq ]] && [[ ! $(cat $HOME/lista-arq|grep "KEY INVALIDA!") ]]; then
+[[ -e ${SCPdir}/header ]] && {
+echo $Key > /etc/cghkey
+clear
+rm -f $HOME/log.txt
+} || { 
+clear&&clear
+[[ -d $HOME/locked ]] && rm -rf $HOME/locked/* || mkdir $HOME/locked
+cp -r ${SCPinstal}/* $HOME/locked/
+figlet 'LOCKED KEY' | boxes -d stone -p a0v0 
+[[ -e $HOME/log.txt ]] && ff=$(cat < $HOME/log.txt | wc -l) || ff='ALL'
+ msg -ne " ${aLerT} "
+echo -e "\033[1;31m [ $ff FILES DE KEY BLOQUEADOS ] " | pv -qL 50 && msg -bar3
+echo -e " APAGA TU CORTAFUEGOS O HABILITA PUERTO 81 Y 8888"
+echo -e "   ---- AGREGANDO REGLAS AUTOMATICAS ----"
+act_ufw
+echo -e "   Si esto no funciona PEGA ESTOS COMANDOS  " 
+echo -e "   sudo ufw allow 81 && sudo ufw allow 8888 "
+msg -bar3 
+echo -e "             sudo apt purge ufw -y"
+   invalid_key && exit
+}
+#systemctl restart rsyslog > /dev/null 2>&1
+#systemctl restart rsyslog.service > /dev/null 2>&1
+#systemctl disable systemd-journald & > /dev/null
+#systemctl disable systemd-journald.service & > /dev/null
+#systemd-journald.socket
+#systemd-journald-audit.socket
+#systemd-journald-dev-log.socket
+#[[ -d /var/log/journal ]] && rm -rf /var/log/journal
+[[ -d /etc/alx ]] || mkdir /etc/alx
+[[ -e /etc/folteto ]] && rm -f /etc/folteto
+msg -bar3
+killall apt apt-get &> /dev/null
+fun_install
+function_verify
+else
+invalid_key
+fi
+sudo sync 
+echo 3 > /proc/sys/vm/drop_caches
+sysctl -w vm.drop_caches=3 > /dev/null 2>&1
+}
+funkey
 }
 
 ofus () {
