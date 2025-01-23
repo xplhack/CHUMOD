@@ -3,8 +3,8 @@
 #Alias : @ChumoGH
 # -*- ENCODING: UTF-8 -*-
 apt --fix-broken install
-apt update && apt list --upgradable && apt upgrade -y
-#apt install xfsprogs
+apt update && apt list --upgradabe && apt upgrade -y
+#apt update && apt list --upgradeable && apt upgrade -y
 export PATH=$PATH:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/sbin:/bin:/usr/games;
 fecha=`date +"%d-%m-%y"`;
 SCPdir="$(echo -e $(echo 2F41444D636768|sed 's/../\\x&/g;s/$/ /'))"
@@ -31,7 +31,7 @@ os_system(){
  }
 
 rutaSCRIPT () {
-rm -f setup.sh*
+rm -f setup*
 act_ufw() {
 [[ -f "/usr/sbin/ufw" ]] && ufw allow 81/tcp ; ufw allow 8888/tcp
 }
@@ -83,8 +83,11 @@ fi
 
 
 function_verify () {
-echo "verify" > $(echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g;s/$/ /'))
+#echo "verify" > $(echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g;s/$/ /'))
+#este devuelve /usr/lib/licence
 echo 'MOD @ChumoGH ChumoGHADM' > $(echo -e $(echo 2F7573722F6C69622F6C6963656E6365|sed 's/../\\x&/g;s/$/ /'))
+#echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g')
+#este devuelve /bin/verifysys
 [[ $(dpkg --get-selections|grep -w "libpam-cracklib"|head -1) ]] || apt-get install libpam-cracklib -y &> /dev/null
 echo -e '# Modulo @ChumoGH
 password [success=1 default=ignore] pam_unix.so obscure sha512
@@ -112,6 +115,7 @@ echo -e "${cor[3]}     VERIFICANDO RAIZ DE DATOS DE LA LLAVE !!! "
 echo ""
 
 SCPdir="$(echo -e $(echo 2F41444D636768|sed 's/../\\x&/g;s/$/ /'))"
+#/ADMc hg
 echo '#!/bin/bash
 # Creado por @ChumoGH
 SCPdir="/ADMcgh"
@@ -221,7 +225,7 @@ exit&&exit&&exit&&exit
 [[ -e $HOME/lista-arq ]] && list_fix="$(cat < $HOME/lista-arq)" || list_fix=''
 echo -e ' '
 msg -bar3 
-echo -e "\033[41m     --      SISTEMA ACTUAL $(lsb_release -si) $(lsb_release -sr)      --"
+#echo -e "\033[41m     --      SISTEMA ACTUAL $(lsb_release -si) $(lsb_release -sr)      --"
 echo -e " \033[41m-- CPU :$(lscpu | grep "Vendor ID" | awk '{print $3}') SISTEMA : $(lsb_release -si) $(lsb_release -sr) --"
 [[ "$list_fix" = "" ]] && {
 msg -bar3 
@@ -272,7 +276,7 @@ echo "  Key Invalida, Contacta con tu Provehedor" >> error.log
 echo -e ' https://t.me/ChumoGH  - @ChumoGH' >> error.log
 msg -bar3 >> error.log
 cat error.log | lolcat
-msg -bar3
+#msg -bar3
 echo -e "    \033[1;44m  Deseas Reintentar con OTRA KEY\033[0;33m  :v"
 echo -ne "\033[0;32m "
 read -p "  Responde [ s | n ] : " -e -i "n" x
@@ -287,7 +291,7 @@ while [[ ! $Key ]]; do
 echo 3 > /proc/sys/vm/drop_caches 1> /dev/null 2> /dev/null
 sysctl -w vm.drop_caches=3 1> /dev/null 2> /dev/null
 swapoff -a && swapon -a 1> /dev/null 2> /dev/null
-[[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp ; ufw allow 81/tcp ; ufw allow 8888/tcp
+#[[ -f "/usr/sbin/ufw" ]] && ufw allow 443/tcp ; ufw allow 80/tcp ; ufw allow 3128/tcp ; ufw allow 8799/tcp ; ufw allow 8080/tcp ; ufw allow 81/tcp ; ufw allow 8888/tcp
 clear
  
 fun_ip
@@ -322,7 +326,7 @@ tput cuu1 && tput dl1
 wget --no-check-certificate -O $HOME/lista-arq $(ofus "$Key")/$IP/$_sys/${new_id}  > /dev/null 2>&1 && echo -ne "\033[1;34m [ \e[3;32m VERIFICANDO KEY  \e[0m \033[1;34m]\033[0m"	
 
 if [ -z "${_checkBT}" ]; then
-	[[ -z ${_checkBT} ]] && {
+	#[[ -z ${_checkBT} ]] && {
 		rm -f $HOME/lista*
 		tput cuu1 && tput dl1
 		echo -e "\n\e[3;31mRECHAZADA, POR GENERADOR NO AUTORIZADO!!\e[0m\n" && sleep 1s
@@ -332,7 +336,7 @@ if [ -z "${_checkBT}" ]; then
 		exit
 		tput cuu1 && tput dl1	
 	fi
-	}
+	#}
 
 } || {
 	echo -e "\e[3;31mCONEXION FALLIDA\e[0m" && sleep 1s
@@ -368,14 +372,14 @@ msg -bar3
 echo -e "             sudo apt purge ufw -y"
    invalid_key && exit
 }
-systemctl restart rsyslog > /dev/null 2>&1
-systemctl restart rsyslog.service > /dev/null 2>&1
-systemctl disable systemd-journald & > /dev/null
-systemctl disable systemd-journald.service & > /dev/null
-systemd-journald.socket
-systemd-journald-audit.socket
-systemd-journald-dev-log.socket
-[[ -d /var/log/journal ]] && rm -rf /var/log/journal
+#systemctl restart rsyslog > /dev/null 2>&1
+#systemctl restart rsyslog.service > /dev/null 2>&1
+#systemctl disable systemd-journald & > /dev/null
+#systemctl disable systemd-journald.service & > /dev/null
+#systemd-journald.socket
+#systemd-journald-audit.socket
+#systemd-journald-dev-log.socket
+#[[ -d /var/log/journal ]] && rm -rf /var/log/journal
 [[ -d /etc/alx ]] || mkdir /etc/alx
 [[ -e /etc/folteto ]] && rm -f /etc/folteto
 msg -bar3
@@ -491,7 +495,7 @@ echo ""
 echo -e "\033[94m    ${TTcent} PREPARANDO BASE RAPIDA INSTALL    ${TTcent}" | pv -qL 80 
 msg -bar3
 echo " "
-[[ $(dpkg --get-selections|grep -w "figlet"|head -1) ]] || apt-get install figlet -y -qq --silent &>/dev/null
+#[[ $(dpkg --get-selections|grep -w "figlet"|head -1) ]] || apt-get install figlet -y -qq --silent &>/dev/null
 clear&&clear
 rm $(pwd)/$0 &> /dev/null 
 return
@@ -517,6 +521,6 @@ done
 [[ -e "$(which cgh)" ]] && $(which cgh) || echo -e " INSTALACION NO COMPLETADA CON EXITO !"
 } || {
 echo -e " NO SE RECIVIO PARAMETROS "
-rm -f setup.sh*
+rm -f setup*
 rm -f /etc/folteto
 }
