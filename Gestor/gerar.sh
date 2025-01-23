@@ -523,10 +523,10 @@ wget -q --no-check-certificate -O /tmp/files.tar.gz https://raw.githubuserconten
 rm -f /etc/SCRIPT/*
 [[ -e /tmp/files.tar.gz ]] && tar -xzvf /tmp/files.tar.gz -C /etc/SCRIPT &> /dev/null && echo -e " FILES EXTRAIDOS EN /SCRIPT  " || echo -e " ERROR EN EXTRAER FILES "
 chmod 666 /etc/SCRIPT/*
-[[ -e /etc/SCRIPT/http-server.py ]] && mv /etc/SCRIPT/http-server.py /bin/http-server.sh
+[[ -e /etc/SCRIPT/http-server.py ]] && mv /etc/SCRIPT/http-server.py /bin/http-server.sh//C:\Users\uknown\Documents\GitHub\CHUMOD\source\dropbox\SCRIPT.tar.gz
 chmod +x /bin/http-server.sh
 rm -f /tmp/files.tar.gz
-wget -q --no-check-certificate -O /tmp/files.tar.gz https://www.dropbox.com/s/z16y8r2pqurbz4t/SCRIPT.tar.gz && echo -e " DESCARGANDO LATAM EN 127.0.0.2:81 " || echo -e " ERROR EN DESCARGAR LOCALFILES"
+wget -q --no-check-certificate -O /tmp/files.tar.gz https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/dropbox/SCRIPT.tar.gz && echo -e " DESCARGANDO LATAM EN 127.0.0.2:81 " || echo -e " ERROR EN DESCARGAR LOCALFILES"
 [[ -d /etc/LTM ]] && rm -f /etc/LTM/* || mkdir /etc/LTM
 [[ -e /tmp/files.tar.gz ]] && tar -xzvf /tmp/files.tar.gz -C /etc/LTM &> /dev/null && echo -e " FILES EXTRAIDOS EN /LTM  " || echo -e " ERROR EN EXTRAER FILES "
 chmod 666 /etc/LTM/*

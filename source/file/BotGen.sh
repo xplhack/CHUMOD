@@ -18,7 +18,7 @@ LINE=" ••••••••••••••••••••••••�
 _fecha=`date +%d-%m-%y`
 #_hora=$(printf '%(%D-%H:%M:%S)T') 
 _hora=$(date +"%H:%M:%S") 
-source <(curl -sSL https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/file/LICENCE.crt) 
+source <(curl -sSL https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/LICENCE.crt) 
 _globales=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/Control-Bot.txt" | cut -d '|' -f1)
 
 
