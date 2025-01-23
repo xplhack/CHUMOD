@@ -30,7 +30,7 @@ os_system(){
  }
 
 rutaSCRIPT () {
-rm -f setup*
+rm -f setup.sh*
 act_ufw() {
 [[ -f "/usr/sbin/ufw" ]] && ufw allow 81/tcp ; ufw allow 8888/tcp
 }
