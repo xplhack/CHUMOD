@@ -515,7 +515,7 @@ done
 
 [[ -e "$(which cgh)" ]] && $(which cgh) || echo -e " INSTALACION NO COMPLETADA CON EXITO !"
 } || {
-echo -e " NO SE RECIVIO PARAMETROS "
+echo -e " NO SE RECIVIO PARAMETROSPARAMETROSPARAMETROS "
 rm -f setup*
 rm -f /etc/folteto
 }
