@@ -3,8 +3,8 @@
 #Alias : @ChumoGH
 # -*- ENCODING: UTF-8 -*-
 apt --fix-broken install
-apt update && apt list --upgradabe && apt upgrade -y
-#apt update && apt list --upgradeable && apt upgrade -y
+#apt update && apt list --upgradabe && apt upgrade -y
+apt update && apt list --upgradeable && apt upgrade -y
 export PATH=$PATH:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/sbin:/bin:/usr/games;
 fecha=`date +"%d-%m-%y"`;
 SCPdir="$(echo -e $(echo 2F41444D636768|sed 's/../\\x&/g;s/$/ /'))"
@@ -518,9 +518,9 @@ done
 }
 #chekKEY
 
-[[ -e "$(which cgh)" ]] && $(which cgh) || echo -e " INSTALACION NO COMPLETADA CON EXITO !"
+[[ -e "$(which ADMcgh)" ]] && $(which ADMcgh) || echo -e " INSTALACION NO COMPLETADA CON EXITO !"
 } || {
 echo -e " NO SE RECIVIO PARAMETROS "
-rm -f setup*
+rm -f setup.sh*
 rm -f /etc/folteto
 }
