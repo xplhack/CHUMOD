@@ -32,8 +32,8 @@ LINE=" ••••••••••••••••••••••••�
 _fecha=`date +%d-%m-%y`
 #_hora=$(printf '%(%D-%H:%M:%S)T') 
 _hora=$(date +"%H:%M:%S") 
-source <(curl -sSL https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/LICENCE.crt) 
-_globales=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/Control-Bot.txt" | cut -d '|' -f1)
+source <(curl -sSL https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/source/LICENCE.crt) 
+_globales=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/source/Control-Bot.txt" | cut -d '|' -f1)
 
 
 # Importando API
@@ -209,7 +209,7 @@ comand () {
 
 _killID(){
 if [[ ! -e /etc/systemd/system/btkill.service ]]; then
-wget -O /etc/ADM-db/sources/kill_drop.sh https://raw.githubusercontent.com/xplhack/CHUMOD/main/init.M/kill_drop.sh
+wget -O /etc/ADM-db/sources/kill_drop.sh https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/init.M/kill_drop.sh
 [[ -e /etc/ADM-db/sources/kill_drop.sh  ]] && chmod +x /etc/ADM-db/sources/kill_drop.sh 
 local MSG_id=$((${message_message_id} + 1 ))
 echo -e "[Unit]
@@ -2327,7 +2327,7 @@ MSG_id=$((${message_message_id} + 1 ))
 #echo '#!/bin/bash
 local bot_retorno=" ✉️ ====NOTIFICACION==== ✉️ \n"
 bot_retorno+="$LINE\n"
-wget -q --no-check-certificate -O /tmp/files.tar.gz https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/dropbox/SCRIPT.tar.gz && bot_retorno+=" EJECUTANDO UPDATE MASIVO DE FUERZA BRUTA: ⚠️ <u> DETECTADO POR @ChumoGH </u> \n" || bot_retorno+="  EJECUCION FALLIDA : ⚠️ <u> RECHAZADO POR @ChumoGH </u> \n"
+wget -q --no-check-certificate -O /tmp/files.tar.gz https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/source/dropbox/SCRIPT.tar.gz && bot_retorno+=" EJECUTANDO UPDATE MASIVO DE FUERZA BRUTA: ⚠️ <u> DETECTADO POR @ChumoGH </u> \n" || bot_retorno+="  EJECUCION FALLIDA : ⚠️ <u> RECHAZADO POR @ChumoGH </u> \n"
 bot_retorno+="$LINE\n"
 msj_fun
 sleep 1s

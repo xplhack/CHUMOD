@@ -8,7 +8,7 @@ checkPID_GEN=$(ps x|grep -w "8888"|grep -v grep)
 call.terminos() {
 MSG_id=$((${message_message_id} + 1 ))
 [[ -z ${callback_query_from_username} ]] && nUSER=${message_from_username} || nUSER=${callback_query_from_username}
-local SMS=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/terminos.txt") 
+local SMS=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/source/terminos.txt") 
 	bot_retorno=" =============================================\n"
 	bot_retorno+="  ${SMS}"
 	bot_retorno+=" =============================================\n"

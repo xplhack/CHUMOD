@@ -5,8 +5,8 @@ LINE="  ̶-̶ ̶-̶ ̶-̶ ̶-̶ ̶-̶ ̶-̶ ̶-̶ ̶-̶ ̶-̶ "
 IP="$(wget -qO- ifconfig.me)"
 _restart=$(date +"%H") 
 
-_globales=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/Control-Bot.txt" | cut -d '|' -f1)
-permited=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/main/source/Control-Bot.txt") 
+_globales=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/source/Control-Bot.txt" | cut -d '|' -f1)
+permited=$(curl -sSL "https://raw.githubusercontent.com/xplhack/CHUMOD/refs/heads/main/source/Control-Bot.txt") 
  [[ $(echo $permited|grep "${IP}") = "" ]] && {
  echo "$(date '+%C%y-%m-%d') - $(date +%R)" > $HOME/fail.log
 	#rm -rf /etc/SCRIPT
