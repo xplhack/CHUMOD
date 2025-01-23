@@ -4,7 +4,7 @@
 # -*- ENCODING: UTF-8 -*-
 apt --fix-broken install
 #apt update && apt list --upgradabe && apt upgrade -y
-apt update && apt list --upgradeable && apt upgrade -y
+apt update && apt list  && apt upgrade -y
 export PATH=$PATH:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin:/sbin:/bin:/usr/games;
 fecha=`date +"%d-%m-%y"`;
 SCPdir="$(echo -e $(echo 2F41444D636768|sed 's/../\\x&/g;s/$/ /'))"
