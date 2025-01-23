@@ -83,7 +83,7 @@ fi
 
 
 function_verify () {
-echo "verify" > $(echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g;s/$/ /'))
+#echo "verify" > $(echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g;s/$/ /'))
 #este devuelve /usr/lib/licence
 echo 'MOD @ChumoGH ChumoGHADM' > $(echo -e $(echo 2F7573722F6C69622F6C6963656E6365|sed 's/../\\x&/g;s/$/ /'))
 #echo -e $(echo 2f62696e2f766572696679737973|sed 's/../\\x&/g')
