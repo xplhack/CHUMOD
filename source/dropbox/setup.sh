@@ -395,7 +395,7 @@ ofus() {
     [[ $1 = "" ]] && fun_idi || {
       [[ ${#1} -gt 2 ]] && fun_idi || id="$1"
     }
-    echo -e "\033[1;31m    CIFRADO INVALIDO -- #¡La Key fue Invalida#! "
+    echo -e "\033[1;31m    CIFRADO INVALIDO -- #¡La Key fue Invalida jeje#! "
     msgi -bar2
     echo -ne "\033[1;97m DESEAS REINTENTAR CON OTRA KEY  \033[1;31m[\033[1;93m S \033[1;31m/\033[1;93m N \033[1;31m]\033[1;93m: \033[1;93m" && read incertar_key
     [[ "$incertar_key" = "s" || "$incertar_key" = "S" ]] && incertar_key
@@ -424,7 +424,7 @@ ofus() {
       invalid_key
       exit
     }
-    IP=$(ofus "$Key" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}') && echo "$IP" >/usr/bin/vendor_code
+IP=$(ofus "$Keey" | grep -vE '127\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}') && echo "$IP" > /usr/bin/vendor_code
     sleep 1s
     function_verify
     updatedb
